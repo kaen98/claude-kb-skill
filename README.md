@@ -131,3 +131,9 @@ git commit -m "chore: add claude kb skill"
 - [Claude Code](https://docs.anthropic.com/claude-code) 已安装
 - Git 项目
 - 支持语言：Java / Kotlin（可自行修改命令中的文件扫描规则适配其他语言）
+
+---
+
+## License
+
+MIT
