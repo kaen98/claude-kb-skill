@@ -10,7 +10,7 @@
 | `/kb-update` | 代码变更后，增量更新知识库 |
 | `/kb-ask <问题>` | 以业务顾问模式回答问题（不写代码） |
 
-自动触发：每次 `git commit` 后，自动检测变更并提示更新知识库。
+所有命令均为手动执行，在 Claude Code 中通过斜杠命令触发。
 
 ---
 
@@ -54,11 +54,7 @@ Claude 会自动扫描项目，在 `.claude/knowledge/` 下生成：
 ### 日常使用
 
 ```bash
-# 提交代码后，hook 自动提示更新
-git commit -m "feat: 新增退款流程"
-# → 💡 检测到变更，建议运行 /kb-update
-
-# 或手动更新
+# 代码变更后手动更新知识库
 /kb-update
 
 # 随时提问
@@ -86,13 +82,11 @@ your-project/
 │   │   ├── kb-ask.md       ← /kb-ask 命令
 │   │   ├── kb-index.md     ← /kb-index 命令
 │   │   └── kb-update.md    ← /kb-update 命令
-│   └── knowledge/          ← 自动生成的知识库（建议提交到 git）
+│   └── knowledge/          ← 生成的知识库（建议提交到 git）
 │       ├── index.md
 │       ├── business-flows.md
 │       ├── data-models.md
 │       └── api-contracts.md
-├── .git/hooks/
-│   └── post-commit         ← 自动触发提示
 └── scripts/
     └── kb-update.sh        ← 手动更新脚本
 ```
