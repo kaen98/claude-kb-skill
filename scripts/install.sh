@@ -47,18 +47,21 @@ download_or_copy "kb-update.md" ".claude/commands/kb-update.md"
 
 echo "   ✅ /kb-ask、/kb-index、/kb-update 命令已安装"
 
-# ── 2. 安装手动更新脚本 ──────────────────────────────────────
-echo "🛠  安装手动更新脚本..."
+# ── 2. 安装辅助脚本 ───────────────────────────────────────────
+echo "🛠  安装辅助脚本..."
 mkdir -p scripts
 
-if [ -f "$(dirname "$0")/../scripts/kb-update.sh" ]; then
-  cp "$(dirname "$0")/../scripts/kb-update.sh" "scripts/kb-update.sh"
-else
-  curl -sSL "$REPO_URL/scripts/kb-update.sh" -o "scripts/kb-update.sh"
-fi
+for script in kb-update.sh kb-auto.sh; do
+  if [ -f "$(dirname "$0")/../scripts/$script" ]; then
+    cp "$(dirname "$0")/../scripts/$script" "scripts/$script"
+  else
+    curl -sSL "$REPO_URL/scripts/$script" -o "scripts/$script"
+  fi
+  chmod +x "scripts/$script"
+done
 
-chmod +x scripts/kb-update.sh
 echo "   ✅ scripts/kb-update.sh 已安装"
+echo "   ✅ scripts/kb-auto.sh 已安装"
 
 # ── 3. 创建知识库目录 ────────────────────────────────────────
 echo "📂 创建知识库目录..."
@@ -86,4 +89,7 @@ echo "🚀 快速开始："
 echo "   1. 在 Claude Code 中运行 /kb-index   ← 首次建立知识库"
 echo "   2. 代码变更后运行 /kb-update 更新知识库"
 echo "   3. 随时用 /kb-ask <你的问题> 查询业务逻辑"
+echo ""
+echo "💡 可选：启用自动模式（每次 commit 后自动提示更新）"
+echo "   ./scripts/kb-auto.sh enable"
 echo ""

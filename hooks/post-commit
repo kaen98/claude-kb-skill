@@ -1,0 +1,46 @@
+#!/bin/bash
+# .git/hooks/post-commit
+# 每次 git commit 后，自动提示更新知识库
+#
+# 管理方式：
+#   ./scripts/kb-auto.sh enable   # 启用自动模式
+#   ./scripts/kb-auto.sh disable  # 关闭自动模式
+
+# 获取本次 commit 变更的 Java/Kotlin 文件
+CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | \
+  grep -E "\.(java|kt|xml)$" | \
+  grep -v "target/" | \
+  tr '\n' ' ')
+
+# 如果没有业务代码变更，跳过
+if [ -z "$CHANGED_FILES" ]; then
+  exit 0
+fi
+
+# 检查是否安装了 claude cli
+if ! command -v claude &> /dev/null; then
+  echo "💡 [KB] 检测到代码变更，建议在 Claude Code 中运行 /kb-update 更新知识库"
+  exit 0
+fi
+
+echo ""
+echo "📚 [KB] 检测到业务代码变更："
+echo "   $CHANGED_FILES"
+echo ""
+
+# 询问是否立即更新（非交互式环境直接跳过）
+if [ -t 1 ]; then
+  read -p "   是否立即更新知识库索引？[y/N] " -n 1 -r
+  echo ""
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "   正在启动 Claude Code 更新知识库..."
+    # 非阻塞方式运行，传入变更文件列表
+    claude --print "/kb-update $CHANGED_FILES" &
+  else
+    echo "   💡 稍后可在 Claude Code 中运行: /kb-update"
+  fi
+else
+  echo "   💡 请在 Claude Code 中运行: /kb-update $CHANGED_FILES"
+fi
+
+exit 0

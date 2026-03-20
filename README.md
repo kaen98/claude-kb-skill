@@ -10,7 +10,7 @@
 | `/kb-update` | 代码变更后，增量更新知识库 |
 | `/kb-ask <问题>` | 以业务顾问模式回答问题（不写代码） |
 
-所有命令均为手动执行，在 Claude Code 中通过斜杠命令触发。
+默认手动执行，可选启用自动模式（每次 commit 后自动提示更新）。
 
 ---
 
@@ -63,6 +63,16 @@ Claude 会自动扫描项目，在 `.claude/knowledge/` 下生成：
 /kb-ask 为什么要拆分成这两个 Service？
 ```
 
+### 自动模式（可选）
+
+默认不启用。启用后每次 `git commit` 会自动检测变更并提示更新知识库。
+
+```bash
+./scripts/kb-auto.sh status    # 查看当前状态
+./scripts/kb-auto.sh enable    # 启用自动模式
+./scripts/kb-auto.sh disable   # 关闭自动模式
+```
+
 ### 手动脚本（在终端中使用）
 
 ```bash
@@ -88,7 +98,8 @@ your-project/
 │       ├── data-models.md
 │       └── api-contracts.md
 └── scripts/
-    └── kb-update.sh        ← 手动更新脚本
+    ├── kb-update.sh        ← 手动更新脚本
+    └── kb-auto.sh          ← 自动模式开关
 ```
 
 ---
